@@ -94,5 +94,36 @@ namespace OnigRegexTests
                 Assert.AreEqual(3, r.MatchLength(2));
             }
         }
+
+        [TestMethod]
+        public void ORegex_IgnoreCase()
+        {
+            using (var r = new ORegex("A"))
+            {
+                r.Search("A");
+                Assert.AreEqual(0, r.MatchPosition(0));
+
+                r.Search("a");
+                Assert.AreEqual(0, r.MatchPosition(0));
+            }
+
+            using (var r = new ORegex("A", true))
+            {
+                r.Search("A");
+                Assert.AreEqual(0, r.MatchPosition(0));
+
+                r.Search("a");
+                Assert.AreEqual(0, r.MatchPosition(0));
+            }
+
+            using (var r = new ORegex("A", false))
+            {
+                r.Search("A");
+                Assert.AreEqual(0, r.MatchPosition(0));
+
+                r.Search("a");
+                Assert.AreEqual(-1, r.MatchPosition(0));
+            }
+        }
     }
 }

@@ -1,12 +1,15 @@
 #include "onigwrap.h"
 
-regex_t *onigwrap_create(char *pattern, int len)
+regex_t *onigwrap_create(char *pattern, int len, int ignoreCase)
 {
 	regex_t *reg;
 
 	OnigErrorInfo einfo;
 
-	OnigOptionType onigOptions = ONIG_OPTION_NONE | ONIG_OPTION_CAPTURE_GROUP | ONIG_OPTION_IGNORECASE;
+	OnigOptionType onigOptions = ONIG_OPTION_NONE | ONIG_OPTION_CAPTURE_GROUP;
+
+	if (ignoreCase == 1)
+		onigOptions |= ONIG_OPTION_IGNORECASE;
 
 	OnigUChar *stringStart = (OnigUChar*) pattern;
 	OnigUChar *stringEnd   = (OnigUChar*) pattern + len;

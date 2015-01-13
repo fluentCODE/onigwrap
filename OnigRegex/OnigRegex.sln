@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnigRegex", "OnigRegex.cspr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnigRegexTests", "..\OnigRegexTests\OnigRegexTests.csproj", "{5D5EF2C9-72D9-43A3-9F5F-F83779B4E2D5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "onigwrap", "onigwrap", "{E921A3CA-5182-4D58-AE23-BD74F63FAF54}"
+	ProjectSection(SolutionItems) = preProject
+		..\onigwrap\onigwrap.c = ..\onigwrap\onigwrap.c
+		..\onigwrap\onigwrap.h = ..\onigwrap\onigwrap.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

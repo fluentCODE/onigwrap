@@ -9,9 +9,11 @@ namespace OnigRegex
         private IntPtr Region;
         private bool RegionSet = false;
 
-        public ORegex(string pattern)
+        public ORegex(string pattern, bool ignoreCase = true)
         {
-            Regex = OnigInterop.onigwrap_create(pattern, pattern.Length * 2);
+            int ignoreCaseArg = ignoreCase ? 1 : 0;
+
+            Regex = OnigInterop.onigwrap_create(pattern, pattern.Length * 2, ignoreCaseArg);
         }
 
         public int IndexIn(string text, int offset = 0)
