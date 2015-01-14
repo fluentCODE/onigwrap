@@ -40,7 +40,11 @@ namespace OnigRegexTests
 
                 Assert.AreEqual(1, r.MatchPosition(0));
                 Assert.AreEqual(1, r.MatchLength(0));
+                Assert.AreEqual("A", r.Capture(0));
+
                 Assert.AreEqual(-1, r.MatchPosition(1));
+                Assert.AreEqual(-1, r.MatchLength(1));
+                Assert.AreEqual(null, r.Capture(1));
             }
         }
 
@@ -53,7 +57,11 @@ namespace OnigRegexTests
 
                 Assert.AreEqual(1, r.MatchPosition(0));
                 Assert.AreEqual(1, r.MatchLength(0));
+                Assert.AreEqual("A", r.Capture(0));
+
                 Assert.AreEqual(-1, r.MatchPosition(1));
+                Assert.AreEqual(-1, r.MatchLength(1));
+                Assert.AreEqual(null, r.Capture(1));
             }
         }
 
@@ -66,17 +74,29 @@ namespace OnigRegexTests
 
                 Assert.AreEqual(1, r.MatchPosition(0));
                 Assert.AreEqual(1, r.MatchLength(0));
+                Assert.AreEqual("A", r.Capture(0));
+
                 Assert.AreEqual(1, r.MatchPosition(1));
                 Assert.AreEqual(1, r.MatchLength(1));
                 Assert.AreEqual("A", r.Capture(1));
+
+                Assert.AreEqual(-1, r.MatchPosition(2));
+                Assert.AreEqual(-1, r.MatchLength(2));
+                Assert.AreEqual(null, r.Capture(2));
 
                 r.Search("--A", 1);
 
                 Assert.AreEqual(2, r.MatchPosition(0));
                 Assert.AreEqual(1, r.MatchLength(0));
+                Assert.AreEqual("A", r.Capture(0));
+
                 Assert.AreEqual(2, r.MatchPosition(1));
                 Assert.AreEqual(1, r.MatchLength(1));
                 Assert.AreEqual("A", r.Capture(1));
+
+                Assert.AreEqual(-1, r.MatchPosition(2));
+                Assert.AreEqual(-1, r.MatchLength(2));
+                Assert.AreEqual(null, r.Capture(2));
             }
         }
 
@@ -88,10 +108,19 @@ namespace OnigRegexTests
                 r.Search("---A---");
                 Assert.AreEqual(3, r.MatchPosition(0));
                 Assert.AreEqual(4, r.MatchLength(0));
+                Assert.AreEqual("A---", r.Capture(0));
+
                 Assert.AreEqual(3, r.MatchPosition(1));
                 Assert.AreEqual(1, r.MatchLength(1));
+                Assert.AreEqual("A", r.Capture(1));
+
                 Assert.AreEqual(4, r.MatchPosition(2));
                 Assert.AreEqual(3, r.MatchLength(2));
+                Assert.AreEqual("---", r.Capture(2));
+
+                Assert.AreEqual(-1, r.MatchPosition(3));
+                Assert.AreEqual(-1, r.MatchLength(3));
+                Assert.AreEqual(null, r.Capture(3));
             }
         }
 
@@ -123,6 +152,110 @@ namespace OnigRegexTests
 
                 r.Search("a");
                 Assert.AreEqual(-1, r.MatchPosition(0));
+            }
+        }
+
+        [TestMethod]
+        public void ORegex_NoCaptureExceptions()
+        {
+            using (var r = new ORegex("A"))
+            {
+                // No region is defined since we haven't searched
+                try
+                {
+                    r.MatchPosition(0);
+                    Assert.Fail();
+                }
+                catch (InvalidOperationException) { }
+
+                try
+                {
+                    r.MatchLength(0);
+                    Assert.Fail();
+                }
+                catch (InvalidOperationException) { }
+
+                try
+                {
+                    r.Capture(0);
+                    Assert.Fail();
+                }
+                catch (InvalidOperationException) { }
+
+                // IndexIn should not create a region. Only Search does that.
+                r.IndexIn("A");
+                try
+                {
+                    r.MatchPosition(0);
+                    Assert.Fail();
+                }
+                catch (InvalidOperationException) { }
+
+                try
+                {
+                    r.MatchLength(0);
+                    Assert.Fail();
+                }
+                catch (InvalidOperationException) { }
+
+                try
+                {
+                    r.Capture(0);
+                    Assert.Fail();
+                }
+                catch (InvalidOperationException) { }
+            }
+        }
+
+        [TestMethod]
+        public void ORegex_ObjectDisposedExceptions()
+        {
+            var r = new ORegex("A");
+            r.Dispose();
+
+            try
+            {
+                r.Search("test");
+                Assert.Fail();
+            }
+            catch (ObjectDisposedException) { }
+
+            try
+            {
+                r.IndexIn("test");
+                Assert.Fail();
+            }
+            catch (ObjectDisposedException) { }
+
+            try
+            {
+                r.MatchPosition(0);
+                Assert.Fail();
+            }
+            catch (ObjectDisposedException) { }
+
+            try
+            {
+                r.MatchLength(0);
+                Assert.Fail();
+            }
+            catch (ObjectDisposedException) { }
+
+            try
+            {
+                r.Capture(0);
+                Assert.Fail();
+            }
+            catch (ObjectDisposedException) { }
+
+            // IDisposable.Dispose() should be idempotent
+            try
+            {
+                r.Dispose();
+            }
+            catch (ObjectDisposedException)
+            {
+                Assert.Fail();
             }
         }
     }

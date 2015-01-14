@@ -4,68 +4,88 @@ namespace OnigRegex
 {
     public class ORegex : IDisposable
     {
-        private string Text;
-        private IntPtr Regex;
-        private IntPtr Region;
-        private bool RegionSet = false;
+        private string text;
+        private IntPtr regex;
+        private IntPtr region;
+        private bool regionSet = false;
+        private bool disposed = false;
 
         public ORegex(string pattern, bool ignoreCase = true)
         {
             int ignoreCaseArg = ignoreCase ? 1 : 0;
 
-            Regex = OnigInterop.onigwrap_create(pattern, pattern.Length * 2, ignoreCaseArg);
+            regex = OnigInterop.onigwrap_create(pattern, pattern.Length * 2, ignoreCaseArg);
         }
 
         public int IndexIn(string text, int offset = 0)
         {
-            return OnigInterop.onigwrap_index_in(Regex, text, offset * 2, text.Length * 2);
+            if (disposed)
+                throw new ObjectDisposedException("ORegex");
+
+            return OnigInterop.onigwrap_index_in(regex, text, offset * 2, text.Length * 2);
         }
 
         public void Search(string text, int offset = 0)
         {
-            Text = text;
-            if (RegionSet)
-                OnigInterop.onigwrap_region_free(Region);
+            if (disposed)
+                throw new ObjectDisposedException("ORegex");
 
-            Region = OnigInterop.onigwrap_search(Regex, text, offset * 2, text.Length * 2);
-            RegionSet = true;
+            this.text = text;
+            if (regionSet)
+                OnigInterop.onigwrap_region_free(region);
+
+            region = OnigInterop.onigwrap_search(regex, text, offset * 2, text.Length * 2);
+            regionSet = true;
         }
 
         public int MatchPosition(int nth)
         {
-            if (!RegionSet)
-                return -1;
+            if (disposed)
+                throw new ObjectDisposedException("ORegex");
 
-            return OnigInterop.onigwrap_pos(Region, nth);
+            if (!regionSet)
+                throw new InvalidOperationException("ORegex.MatchPosition requires that ORegex.Search be run first.");
+
+            return OnigInterop.onigwrap_pos(region, nth);
         }
 
         public int MatchLength(int nth)
         {
-            if (!RegionSet)
-                return -1;
+            if (disposed)
+                throw new ObjectDisposedException("ORegex");
 
-            return OnigInterop.onigwrap_len(Region, nth);
+            if (!regionSet)
+                throw new InvalidOperationException("ORegex.MatchLength requires that ORegex.Search be run first.");
+
+            return OnigInterop.onigwrap_len(region, nth);
         }
 
         public string Capture(int nth)
         {
-            if (!RegionSet)
-                return null;
+            if (disposed)
+                throw new ObjectDisposedException("ORegex");
 
-            var pos = OnigInterop.onigwrap_pos(Region, nth);
+            if (!regionSet)
+                throw new InvalidOperationException("ORegex.MatchLength requires that ORegex.Search be run first.");
+
+            var pos = OnigInterop.onigwrap_pos(region, nth);
             if (pos < 0)
                 return null;
 
-            var len = OnigInterop.onigwrap_len(Region, nth);
+            var len = OnigInterop.onigwrap_len(region, nth);
 
-            return Text.Substring(pos, len);
+            return text.Substring(pos, len);
         }
 
         public void Dispose()
         {
-            OnigInterop.onigwrap_free(Regex);
-            if (RegionSet)
-                OnigInterop.onigwrap_region_free(Region);
+            if (!disposed)
+            {
+                disposed = true;
+                OnigInterop.onigwrap_free(regex);
+                if (regionSet)
+                    OnigInterop.onigwrap_region_free(region);
+            }
         }
     }
 }
