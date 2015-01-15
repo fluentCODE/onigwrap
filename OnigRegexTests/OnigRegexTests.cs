@@ -36,7 +36,9 @@ namespace OnigRegexTests
         {
             using (var r = new ORegex("A"))
             {
+                Assert.IsFalse(r.Ran);
                 r.Search("-A-");
+                Assert.IsTrue(r.Ran);
 
                 Assert.AreEqual(1, r.MatchPosition(0));
                 Assert.AreEqual(1, r.MatchLength(0));

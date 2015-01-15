@@ -10,6 +10,17 @@ namespace OnigRegex
         private bool regionSet = false;
         private bool disposed = false;
 
+        /// <summary>
+        /// Indicates whether or not a search has been run
+        /// </summary>
+        public bool Ran
+        {
+            get
+            {
+                return regionSet;
+            }
+        }
+
         public ORegex(string pattern, bool ignoreCase = true)
         {
             int ignoreCaseArg = ignoreCase ? 1 : 0;
