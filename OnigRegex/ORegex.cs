@@ -79,6 +79,12 @@ namespace OnigRegex
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
             if (!disposed)
             {
                 disposed = true;
@@ -86,6 +92,11 @@ namespace OnigRegex
                 if (regionSet)
                     OnigInterop.onigwrap_region_free(region);
             }
+        }
+
+        ~ORegex()
+        {
+            Dispose(false);
         }
     }
 }
