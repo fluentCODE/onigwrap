@@ -59,6 +59,11 @@ OnigRegion *onigwrap_search(regex_t *reg, char *charPtr, int offset, int length)
 	return region;
 }
 
+int onigwrap_num_regs(OnigRegion *region)
+{
+	return region->num_regs;
+}
+
 int onigwrap_pos(OnigRegion *region, int nth)
 {
 	if (nth < region->num_regs)

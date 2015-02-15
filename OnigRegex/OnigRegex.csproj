@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="OnigInterop.cs" />
     <Compile Include="ORegex.cs" />
+    <Compile Include="ORegexResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

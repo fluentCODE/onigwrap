@@ -16,6 +16,9 @@ ONIG_EXTERN
 OnigRegion *onigwrap_search(regex_t *reg, char *charPtr, int offset, int length);
 
 ONIG_EXTERN
+int onigwrap_num_regs(OnigRegion *region);
+
+ONIG_EXTERN
 int onigwrap_pos(OnigRegion *region, int nth);
 
 ONIG_EXTERN

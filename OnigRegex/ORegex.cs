@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace OnigRegex
 {
@@ -34,6 +35,43 @@ namespace OnigRegex
                 throw new ObjectDisposedException("ORegex");
 
             return OnigInterop.onigwrap_index_in(regex, text, offset * 2, text.Length * 2);
+        }
+
+        /// <summary>
+        /// Performs a thread safe search and returns the results in a list
+        /// </summary>
+        /// <param name="text">The text to search</param>
+        /// <param name="offset">An offset from which to start</param>
+        /// <param name="resultList">A List to pass the results into. If omitted, SafeSearch creates a new list.</param>
+        /// <returns></returns>
+        public List<ORegexResult> SafeSearch(string text, int offset = 0, List<ORegexResult> resultList = null)
+        {
+            if (resultList == null)
+                resultList = new List<ORegexResult>();
+
+            lock(this)
+            {
+                Search(text, offset);
+
+                var captureCount = OnigInterop.onigwrap_num_regs(region);
+                for (var capture = 0; capture < captureCount; capture++)
+                {
+                    var pos = MatchPosition(capture);
+                    if (capture == 0 && pos == -1)
+                        break;
+
+                    resultList.Add(new ORegexResult()
+                    {
+                        Position = pos,
+                        Length = pos == -1 ? 0 : MatchLength(capture)
+                    });
+                }
+
+                this.text = null;
+                OnigInterop.onigwrap_region_free(region);
+                regionSet = false;
+            }
+            return resultList;
         }
 
         public void Search(string text, int offset = 0)

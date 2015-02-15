@@ -21,6 +21,9 @@ namespace OnigRegex
         internal static extern IntPtr onigwrap_search(IntPtr regex, string text, int offset, int length);
 
         [DllImport("onigwrap", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int onigwrap_num_regs(IntPtr region);
+
+        [DllImport("onigwrap", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int onigwrap_pos(IntPtr region, int nth);
 
         [DllImport("onigwrap", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
