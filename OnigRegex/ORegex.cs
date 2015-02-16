@@ -10,6 +10,7 @@ namespace OnigRegex
         private IntPtr region;
         private bool regionSet = false;
         private bool disposed = false;
+        private object syncObject = new object();
 
         /// <summary>
         /// Indicates whether or not a search has been run
@@ -49,7 +50,7 @@ namespace OnigRegex
             if (resultList == null)
                 resultList = new List<ORegexResult>();
 
-            lock(this)
+            lock(syncObject)
             {
                 Search(text, offset);
 
