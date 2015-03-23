@@ -245,6 +245,20 @@ namespace OnigRegexTests
         }
 
         [TestMethod]
+        public void ORegex_InvalidRegularExpression()
+        {
+            var invalidRegex = "(.*";
+            try
+            {
+                var r = new ORegex(invalidRegex);
+                Assert.Fail("An invalid regular expression did not throw an ArgumentException");
+            }
+            catch (ArgumentException)
+            {
+            }
+        }
+
+        [TestMethod]
         public void ORegex_ObjectDisposedExceptions()
         {
             var r = new ORegex("A");

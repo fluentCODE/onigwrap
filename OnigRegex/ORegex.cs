@@ -28,6 +28,9 @@ namespace OnigRegex
             int ignoreCaseArg = ignoreCase ? 1 : 0;
 
             regex = OnigInterop.onigwrap_create(pattern, pattern.Length * 2, ignoreCaseArg);
+
+            if (regex == IntPtr.Zero)
+                throw new ArgumentException(String.Format("Invalid Onigmo regular expression: {0}", pattern));
         }
 
         public int IndexIn(string text, int offset = 0)
