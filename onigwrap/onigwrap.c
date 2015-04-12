@@ -1,6 +1,6 @@
 #include "onigwrap.h"
 
-regex_t *onigwrap_create(char *pattern, int len, int ignoreCase)
+regex_t *onigwrap_create(char *pattern, int len, int ignoreCase, int multiline)
 {
 	regex_t *reg;
 
@@ -10,6 +10,9 @@ regex_t *onigwrap_create(char *pattern, int len, int ignoreCase)
 
 	if (ignoreCase == 1)
 		onigOptions |= ONIG_OPTION_IGNORECASE;
+
+	if (multiline == 1)
+		onigOptions |= ONIG_OPTION_MULTILINE;
 
 	OnigUChar *stringStart = (OnigUChar*) pattern;
 	OnigUChar *stringEnd   = (OnigUChar*) pattern + len;

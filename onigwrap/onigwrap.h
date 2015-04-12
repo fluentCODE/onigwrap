@@ -1,7 +1,7 @@
 #include "oniguruma.h"
 
 ONIG_EXTERN
-regex_t *onigwrap_create(char *pattern, int len, int ignoreCase);
+regex_t *onigwrap_create(char *pattern, int len, int ignoreCase, int multiline);
 
 ONIG_EXTERN
 void onigwrap_region_free(OnigRegion *region);

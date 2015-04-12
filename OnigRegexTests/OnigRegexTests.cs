@@ -12,6 +12,7 @@ namespace OnigRegexTests
         {
             using (var r = new ORegex("A"))
             {
+                Assert.IsTrue(r.Valid);
                 Assert.AreEqual(0, r.IndexIn("A--"));
                 Assert.AreEqual(1, r.IndexIn("-A-"));
                 Assert.AreEqual(-1, r.IndexIn("---"));
@@ -24,6 +25,7 @@ namespace OnigRegexTests
         {
             using (var r = new ORegex("A"))
             {
+                Assert.IsTrue(r.Valid);
                 Assert.AreEqual(-1, r.IndexIn("A--", 1));
                 Assert.AreEqual(1, r.IndexIn("AA-", 1));
                 Assert.AreEqual(2, r.IndexIn("A-A", 2));
@@ -36,6 +38,7 @@ namespace OnigRegexTests
         {
             using (var r = new ORegex("A"))
             {
+                Assert.IsTrue(r.Valid);
                 Assert.IsFalse(r.Ran);
                 r.Search("-A-");
                 Assert.IsTrue(r.Ran);
@@ -55,6 +58,7 @@ namespace OnigRegexTests
         {
             using (var r = new ORegex("A"))
             {
+                Assert.IsTrue(r.Valid);
                 r.Search("-A-", 1);
 
                 Assert.AreEqual(1, r.MatchPosition(0));
@@ -72,6 +76,7 @@ namespace OnigRegexTests
         {
             using (var r = new ORegex("(A)"))
             {
+                Assert.IsTrue(r.Valid);
                 r.Search("-A-", 1);
 
                 Assert.AreEqual(1, r.MatchPosition(0));
@@ -107,6 +112,7 @@ namespace OnigRegexTests
         {
             using (var r = new ORegex("(A)(.*)"))
             {
+                Assert.IsTrue(r.Valid);
                 r.Search("---A---");
                 Assert.AreEqual(3, r.MatchPosition(0));
                 Assert.AreEqual(4, r.MatchLength(0));
@@ -131,6 +137,7 @@ namespace OnigRegexTests
         {
             using (var r = new ORegex("(A)(.*)"))
             {
+                Assert.IsTrue(r.Valid);
                 var result = r.SafeSearch("---A---");
                 Assert.AreEqual(result.Count, 3);
 
@@ -150,6 +157,7 @@ namespace OnigRegexTests
         {
             using (var r = new ORegex("((A)|(B))(.*)"))
             {
+                Assert.IsTrue(r.Valid);
                 var result = r.SafeSearch("---A---");
                 Assert.AreEqual(result.Count, 5);
 
@@ -166,6 +174,8 @@ namespace OnigRegexTests
         {
             using (var r = new ORegex("A"))
             {
+                Assert.IsTrue(r.Valid);
+
                 r.Search("A");
                 Assert.AreEqual(0, r.MatchPosition(0));
 
@@ -175,6 +185,8 @@ namespace OnigRegexTests
 
             using (var r = new ORegex("A", true))
             {
+                Assert.IsTrue(r.Valid);
+
                 r.Search("A");
                 Assert.AreEqual(0, r.MatchPosition(0));
 
@@ -184,11 +196,29 @@ namespace OnigRegexTests
 
             using (var r = new ORegex("A", false))
             {
+                Assert.IsTrue(r.Valid);
+
                 r.Search("A");
                 Assert.AreEqual(0, r.MatchPosition(0));
 
                 r.Search("a");
                 Assert.AreEqual(-1, r.MatchPosition(0));
+            }
+        }
+
+        [TestMethod]
+        public void ORegex_MultilineSearch()
+        {
+            using (var r = new ORegex("A.B", multiline: false))
+            {
+                Assert.IsTrue(r.Valid);
+                Assert.AreEqual(-1, r.IndexIn("A\nB"));
+            }
+
+            using (var r = new ORegex("A.B", multiline: true))
+            {
+                Assert.IsTrue(r.Valid);
+                Assert.AreEqual(0, r.IndexIn("A\nB"));
             }
         }
 
@@ -248,14 +278,29 @@ namespace OnigRegexTests
         public void ORegex_InvalidRegularExpression()
         {
             var invalidRegex = "(.*";
+            var r = new ORegex(invalidRegex);
+            Assert.IsFalse(r.Valid);
+
             try
             {
-                var r = new ORegex(invalidRegex);
+                r.SafeSearch("test");
                 Assert.Fail("An invalid regular expression did not throw an ArgumentException");
             }
-            catch (ArgumentException)
+            catch (ArgumentException) { }
+
+            try
             {
+                r.IndexIn("test");
+                Assert.Fail("An invalid regular expression did not throw an ArgumentException");
             }
+            catch (ArgumentException) { }
+
+            try
+            {
+                r.Search("test");
+                Assert.Fail("An invalid regular expression did not throw an ArgumentException");
+            }
+            catch (ArgumentException) { }
         }
 
         [TestMethod]
@@ -263,6 +308,13 @@ namespace OnigRegexTests
         {
             var r = new ORegex("A");
             r.Dispose();
+
+            try
+            {
+                r.SafeSearch("test");
+                Assert.Fail();
+            }
+            catch (ObjectDisposedException) { }
 
             try
             {

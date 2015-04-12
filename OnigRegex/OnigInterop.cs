@@ -6,7 +6,7 @@ namespace OnigRegex
     internal unsafe class OnigInterop
     {
         [DllImport("onigwrap", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern IntPtr onigwrap_create(string pattern, int len, int ignoreCase);
+        internal static extern IntPtr onigwrap_create(string pattern, int len, int ignoreCase, int multiline);
 
         [DllImport("onigwrap", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void onigwrap_region_free(IntPtr region);
