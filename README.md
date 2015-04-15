@@ -37,20 +37,20 @@ Take the dylib and put it alongside your binary.
 Windows
 -------
 
-Build and configure onig. Copy the win32/Makefile and win32/config.h to onig's root directory and run `nmake`.
+Build and configure onig. Copy the win32/Makefile and win32/config.h to onig's root directory and run `nmake`. If you're building Onig as 64 bit, you'll need to edit the Makefile and add /MACHINE:X64 to the LINKFLAGS
 
-Copy onig.lib to the onigwrap folder.
+Copy onig\_s.lib and oniguruma.h to the onigwrap folder.
 
 Build onigwrap:
 
-`cl.exe /D_USRDLL /D_WINDLL onigwrap.c /link onig.lib /DLL /OUT:onigwrap.dll`
+`cl.exe /DONIG_EXTERN=extern /D_USRDLL /D_WINDLL onigwrap.c /link /LTCG onig_s.lib /DLL /OUT:onigwrap.dll`
 
-Copy onig.dll and onigwrap.dll to the folder with your binary.
+Copy onigwrap.dll to the folder with your binary.
 
 Linux
 -----
 
-Build and configure onig. We need to prepare onig for static linking though, so add `-fPIC` to the CFLAGS. If your Mono version is 32bit, make sure to add -m32 to the CFLAGS too.
+Build and configure onig. We need to prepare onig for static linking though, so add `-fPIC` to the CFLAGS. If your Mono version is 32bit, make sure to add -m32 to the CFLAGS too. (You may need to install a package like `gcc-multilib` to make the build work with -m32.)
 
 `./configure "CFLAGS=-fPIC"`
 
