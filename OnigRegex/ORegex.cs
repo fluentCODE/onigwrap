@@ -56,7 +56,7 @@ namespace OnigRegex
         /// </summary>
         /// <param name="text">The text to search</param>
         /// <param name="offset">An offset from which to start</param>
-        /// <returns></returns>
+        /// <returns>A list of capture group matches</returns>
         public List<ORegexResult> SafeSearch(string text, int offset = 0)
         {
             if (disposed) throw new ObjectDisposedException("ORegex");
@@ -90,6 +90,12 @@ namespace OnigRegex
             return resultList;
         }
 
+        /// <summary>
+        /// Perform a search for the given text starting at the specified offset
+        /// </summary>
+        /// <param name="text">The text to search</param>
+        /// <param name="offset">An offset from which to start</param>
+        /// <returns>Nothing. Use MatchPosition and MatchLength to query the results</returns>
         public void Search(string text, int offset = 0)
         {
             if (disposed) throw new ObjectDisposedException("ORegex");
@@ -103,6 +109,11 @@ namespace OnigRegex
             regionSet = true;
         }
 
+        /// <summary>
+        /// Get the start match position of the specified capture group
+        /// </summary>
+        /// <param name="nth">The capture group index</param>
+        /// <returns>The position in the string that was searched where the specified capture group was matched</returns>
         public int MatchPosition(int nth)
         {
             if (disposed) throw new ObjectDisposedException("ORegex");
@@ -112,6 +123,11 @@ namespace OnigRegex
             return OnigInterop.onigwrap_pos(region, nth);
         }
 
+        /// <summary>
+        /// Get the length of the specified capture group match
+        /// </summary>
+        /// <param name="nth">The capture group index</param>
+        /// <returns>The length in the string that was matched inside the specified capture group</returns>
         public int MatchLength(int nth)
         {
             if (disposed) throw new ObjectDisposedException("ORegex");
@@ -121,6 +137,11 @@ namespace OnigRegex
             return OnigInterop.onigwrap_len(region, nth);
         }
 
+        /// <summary>
+        /// Get the text that matched inside the specified capture group
+        /// </summary>
+        /// <param name="nth">The capture group index</param>
+        /// <returns>The text that was matched inside the specified capture group</returns>
         public string Capture(int nth)
         {
             if (disposed) throw new ObjectDisposedException("ORegex");
