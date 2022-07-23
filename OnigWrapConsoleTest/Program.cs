@@ -20,7 +20,7 @@ namespace OnigWrapConsoleTest
             var pattern =  args?.Length < 2 ? @"\w(\p{L})(?=(\d))" : args[1];
             var start_position = args?.Length < 3 ? 0 : int.Parse(args[2]);
 
-            Console.WriteLine("Building ORegex({0})", text);
+            Console.WriteLine("Building ORegex({0})", pattern);
 
             using (var re = new ORegex(pattern, false))
             {
