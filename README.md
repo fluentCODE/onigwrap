@@ -11,9 +11,9 @@ Building
 First, get a copy of Onigmo or Oniguruma.
 
 * https://github.com/k-takata/Onigmo
-* http://www.geocities.jp/kosako3/oniguruma/ (We don't actively test against oniguruma, but it should work.)
+* https://github.com/kkos/oniguruma (We don't actively test against oniguruma, but it should work.)
 
-Copy oniguruma.h into the onigwrap folder, alongside onigwrap.c and onigwrap.h.
+Copy `oniguruma.h` into the `onigwrap` folder (or copy `onigmo.h` and rename it to `oniguruma.h` if using Onigmo), alongside `onigwrap.c` and `onigwrap.h`.
 
 From here, the build steps diverge for each platform:
 
@@ -26,7 +26,7 @@ Configure and build onig. The defaults should work, but Mono on Mac is usually 3
 
 `make`
 
-Copy .libs/libonig.a to the onigwrap folder.
+Copy `.libs/libonig.a` to the `onigwrap` folder.
 
 Now we build onigwrap:
 
@@ -37,15 +37,15 @@ Take the dylib and put it alongside your binary.
 Windows
 -------
 
-Build and configure onig. Copy the win32/Makefile and win32/config.h to onig's root directory and run `nmake`. If you're building Onig as 64 bit, you'll need to edit the Makefile and add /MACHINE:X64 to the LINKFLAGS
+Build and configure onig. Copy the `win32/Makefile` and `win32/config.h` to onig's root directory and run `nmake`. If you're building Onig as 64 bit, you'll need to edit the Makefile and add `/MACHINE:X64` to the LINKFLAGS
 
-Copy onig\_s.lib and oniguruma.h to the onigwrap folder.
+Copy `onig_s.lib` to the `onigwrap` folder.
 
-Build onigwrap:
+With the `onigwrap` folder as your working dir, build onigwrap:
 
 `cl.exe /DONIG_EXTERN=extern /D_USRDLL /D_WINDLL onigwrap.c /link /LTCG onig_s.lib /DLL /OUT:onigwrap.dll`
 
-Copy onigwrap.dll to the folder with your binary.
+Copy `onigwrap.dll` to the folder with your binary. (For example, `OnigRegexTests/bin/Debug` and `OnigWrapConsoleTest/bin/Debug`.)
 
 Linux
 -----
@@ -54,10 +54,10 @@ Build and configure onig. We need to prepare onig for static linking though, so 
 
 `./configure "CFLAGS=-fPIC"`
 
-Copy .libs/libonig.a to the onigwrap folder.
+Copy `.libs/libonig.a` to the `onigwrap` folder.
 
 Build onigwrap:
 
 `gcc -shared -fPIC onigwrap.c libonig.a -o libonigwrap.so`
 
-Copy libonigwrap.so alongside your binary.
+Copy `libonigwrap.so` alongside your binary.
